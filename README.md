@@ -1,11 +1,10 @@
-cat > README.md << 'EOF'
-# 🧠 agent_trajectory_evaluation
+# 🧠 Agent Trajectory Evaluation
 
 **A Unified Framework for Evaluating LLM Agent Reasoning, Trajectories, and Telemetry**
 
 ---
 
-## 🚀 Overview
+## Overview
 
 `agent_trajectory_evaluation` provides a **modular and extensible framework** for evaluating the reasoning quality, efficiency, and fidelity of **tool-using LLM agents**.
 
@@ -18,21 +17,21 @@ The toolkit unifies both under a single, composable API that is **multi-provider
 
 ---
 
-## 🌟 Key Features
+## Key Features
 
 | Category | Features |
 |-----------|-----------|
-| 🧩 **Evaluation Modes** | • TRACE (No GroundTruth)  • GroundTruth Comparison  • Unified Evaluation |
-| 🔍 **Metrics** | Efficiency, Hallucination, Adaptivity, InstructionError, ExactMatch, FuzzyMatch, StepOverlap |
+| **Evaluation Modes** | • TRACE (No GroundTruth)  • GroundTruth Comparison  • Unified Evaluation |
+| **Metrics** | Efficiency, Hallucination, Adaptivity, InstructionError, ExactMatch, FuzzyMatch, StepOverlap |
 | ☁️ **Multi-Provider Support** | OpenAI (GPT-4/4o), Google Gemini, Anthropic Claude, AWS Bedrock |
-| ⚙️ **Parallel Evaluation** | Async batch scoring for large-scale datasets |
-| 🧠 **Embedding-based Similarity** | Uses SentenceTransformers for semantic fuzzy scoring |
-| 📊 **KPI Aggregation** | Returns structured metrics for dashboards and research |
-| 🧰 **Plug-and-Play Design** | Minimal setup, clean API, extensible for future agents or datasets |
+| **Parallel Evaluation** | Async batch scoring for large-scale datasets |
+| **Embedding-based Similarity** | Uses SentenceTransformers for semantic fuzzy scoring |
+| **KPI Aggregation** | Returns structured metrics for dashboards and research |
+| **Plug-and-Play Design** | Minimal setup, clean API, extensible for future agents or datasets |
 
 ---
 
-## 📦 Installation
+## Installation
 
 ### Option 1 — From GitHub (Recommended)
 
