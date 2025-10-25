@@ -1,0 +1,23 @@
+[project]
+name = "agent_trajectory_evaluation"
+version = "0.1.0"
+description = "Unified evaluation toolkit for LLM agent reasoning, trajectory quality, and ground-truth KPI assessment"
+authors = [{ name="Abhishek Bhardwaj", email="abhishekbhardwaj13506@gmail.com" }]
+license = "Apache-2.0"
+readme = "README.md"
+requires-python = ">=3.9"
+
+dependencies = [
+  "boto3",
+  "numpy",
+  "tqdm",
+  "aiohttp",
+  "google-generativeai",
+  "anthropic",
+  "openai",
+  "sentence-transformers"
+]
+
+[project.urls]
+Homepage = "https://github.com/abhiai-git/agent_trajectory_evaluation"
+Documentation = "https://github.com/abhiai-git/agent_trajectory_evaluation"
