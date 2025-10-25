@@ -61,7 +61,27 @@ using any supported LLM as the evaluator (OpenAI, Gemini, Claude, Bedrock).
 from agent_trajectory_evaluation import LLMConfig
 from agent_trajectory_evaluation.unified import UnifiedEvaluator
 
-config = LLMConfig(provider="openai", model="gpt-4o-mini")
+# --- Configuration for LLM Evaluator ---
+# Replace 'YOUR_API_KEY' with your actual API key for the chosen provider.
+# Ensure the corresponding environment variable (e.g., OPENAI_API_KEY) is set,
+# or pass the API key directly if the provider supports it.
+
+# Example for OpenAI:
+config = LLMConfig(provider="openai", model="gpt-4o-mini", api_key="YOUR_OPENAI_API_KEY")
+# config = LLMConfig(provider="openai", model="gpt-4-turbo", api_key="YOUR_OPENAI_API_KEY")
+
+# Example for Google Gemini:
+# config = LLMConfig(provider="gemini", model="gemini-pro", api_key="YOUR_GEMINI_API_KEY")
+# config = LLMConfig(provider="gemini", model="gemini-1.5-pro", api_key="YOUR_GEMINI_API_KEY")
+
+# Example for Anthropic Claude:
+# config = LLMConfig(provider="claude", model="claude-3-sonnet-20240229", api_key="YOUR_ANTHROPIC_API_KEY")
+# config = LLMConfig(provider="claude", model="claude-3-opus-20240229", api_key="YOUR_ANTHROPIC_API_KEY")
+
+# Example for AWS Bedrock (requires AWS credentials configured):
+# config = LLMConfig(provider="bedrock", model="anthropic.claude-3-sonnet-20240229-v1:0", region_name="us-east-1")
+# config = LLMConfig(provider="bedrock", model="amazon.titan-text-express-v1", region_name="us-east-1")
+
 evaluator = UnifiedEvaluator(config)
 
 trajectory = [
@@ -166,17 +186,17 @@ print(metrics)
 
 The TRACE framework evaluates agent trajectories across four key dimensions:
 
-1.  **Efficiency ($Eff(\mathcal{T})$)**: Quantifies the proportion of necessary evidence in a successful trajectory.
-    $$Eff(\mathcal{T}) = \frac{ |\mathcal{E}_{min}| }{ |\mathcal{E}_{n}| } = 1 - \frac{ |\mathcal{E}_{unnecessary}| }{ |\mathcal{E}_{n}| }$$
-    Where $\mathcal{E}_{min}$ is the minimal set of evidence required to deduce the final answer, and $\mathcal{E}_{n}$ is the total evidence collected.
+1.  **Efficiency ($\text{Eff}(\mathcal{T})$)**: Quantifies the proportion of necessary evidence in a successful trajectory.
+    $$\text{Eff}(\mathcal{T}) = \frac{ \|\mathcal{E}_{min}\| }{ \|\mathcal{E}_{n}\| } = 1 - \frac{ \|\mathcal{E}_{unnecessary}\| }{ \|\mathcal{E}_{n}\| }$$
+    Where $\mathcal{E}_{min}$ is the minimal set of evidence required to deduce the final answer, and $\|\mathcal{E}_{n}\|$ is the total evidence collected.
 
-2.  **Hallucination ($H(\mathcal{T})$)**: Measures the average rate of thoughts that are not grounded in the accumulated evidence.
-    $$H(\mathcal{T}) = \frac{ \sum_{t=1}^{n} H(s_t) }{ n }$$
+2.  **Hallucination ($\text{H}(\mathcal{T})$)**: Measures the average rate of thoughts that are not grounded in the accumulated evidence.
+    $$\text{H}(\mathcal{T}) = \frac{ \sum_{t=1}^{n} H(s_t) }{ n }$$
     Where $H(s_t) = 1$ if the thought $th_t$ at step $s_t$ is not logically derivable from the evidence bank $\mathcal{E}_{t-1}$, and $0$ otherwise.
 
-3.  **Adaptivity ($Adp(\mathcal{T})$)**: Assesses the agent's ability to recover from tool failures.
-    $$Adp(s_{t+1}) = 1 \quad \text{if } th_{t+1} \text{ acknowledges failure and } a_{t+1} \text{ is a sensible alternative, else } 0$$
-    The overall adaptivity score is the average of $Adp(s_{t+1})$ for all tool failure events.
+3.  **Adaptivity ($\text{Adp}(\mathcal{T})$)**: Assesses the agent's ability to recover from tool failures.
+    $$\text{Adp}(s_{t+1}) = 1 \quad \text{if } th_{t+1} \text{ acknowledges failure and } a_{t+1} \text{ is a sensible alternative, else } 0$$
+    The overall adaptivity score is the average of $\text{Adp}(s_{t+1})$ for all tool failure events.
 
 4.  **Instruction Error (Inst.)**: Represents the ratio of steps where the agent fails to select an existing tool or uses an incorrect argument format.
     $$Inst. = \frac{ \text{Count of invalid actions or input formats} }{ \text{Total number of steps in trajectory} }$$
