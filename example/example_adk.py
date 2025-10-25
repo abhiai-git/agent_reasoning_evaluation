@@ -30,6 +30,12 @@ def simulate_adk_trace(question: str) -> List[Dict[str, Any]]:
     Simulates a simplified ADK agent's interaction trace for a given question.
     This trace will contain 'thought', 'action', 'action_input', 'observation',
     and potentially 'final_answer'.
+
+    Args:
+        question: The input question for the simulated agent.
+
+    Returns:
+        A list of dictionaries representing the simulated ADK trace.
     """
     trace = []
     final_answer = None
@@ -71,6 +77,12 @@ def parse_adk_trace_to_steps(adk_trace: List[Dict[str, Any]]) -> List[Dict[str, 
     """
     Parses a simulated ADK trace (which is already close to the target format)
     into the exact list of steps compatible with the evaluation package.
+
+    Args:
+        adk_trace: A list of dictionaries representing the simulated ADK trace.
+
+    Returns:
+        A list of dictionaries, each representing a step in the evaluation package format.
     """
     # In a real scenario, this function would extract information from ADK's
     # specific trace objects (e.g., FunctionCall, ToolOutput, LLM generations).
