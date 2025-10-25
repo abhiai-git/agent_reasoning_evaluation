@@ -37,7 +37,7 @@ The toolkit unifies both under a single, composable API that is **multi-provider
 ### Option 1 — From GitHub (Recommended)
 
 ```bash
-pip install git+https://github.com/yourname/agent_trajectory_evaluation.git
+pip install git+https://github.com/abhiai-git/agent_trajectory_evaluation.git
 ```
 
 ### Option 2 — From Local Zip 
@@ -49,7 +49,7 @@ pip install agent_trajectory_evaluation.zip
 ### Option 3 — Development / Editable Mode
 
 ```bash
-git clone https://github.com/yourname/agent_trajectory_evaluation.git
+git clone https://github.com/abhiai-git/agent_trajectory_evaluation.git
 cd agent_trajectory_evaluation
 pip install -e .
 ```
@@ -112,7 +112,7 @@ scores = evaluator.evaluate(pred, gold)
 print("GroundTruth KPIs:", scores)
 ```
 #### Output
-```json
+```
 {
   'ExactFinalMatch': 0.0,
   'FuzzyFinalMatch': 0.93,
@@ -122,5 +122,51 @@ print("GroundTruth KPIs:", scores)
       'Composite': 0.75
   },
   'OverallScore': 0.84
+}
+```
+
+### Example 3 — Unified Evaluation (TRACE + GroundTruth)
+
+```python
+from agent_trajectory_evaluation import LLMConfig
+from agent_trajectory_evaluation.unified import UnifiedEvaluator
+
+cfg = LLMConfig(provider="claude", model="claude-3-sonnet-20241022")
+eval = UnifiedEvaluator(cfg)
+
+trace = [
+    {"thought": "Find cheapest NYC->LAX flight", "action": "FlightAPI.search", "action_input": "NYC-LAX", "observation": "3 flights found"},
+    {"thought": "Select flight_id=2", "action": "FlightAPI.select", "action_input": "flight_id=2", "observation": "Booked"}
+]
+
+reference = {
+    "steps": [
+        {"action": "FlightAPI.search", "action_input": "NYC to LAX", "observation": "3 flights found"},
+        {"action": "FlightAPI.select", "action_input": "flight_id=2", "observation": "Booking confirmed"}
+    ],
+    "final_answer": "Flight booked to LAX"
+}
+
+metrics = eval.evaluate(trace, valid_tools=["FlightAPI.search", "FlightAPI.select"], reference=reference)
+print(metrics)
+```
+
+### Theoretical Foundation
+This framework synthesizes ideas from three major research efforts:
+
+- TRACE: Evaluating Tool-Enabled Agent Reasoning Zhou, J., Chen, H.,Pan, L., et al., 2024 arXiv:2404.06626
+
+- GRACE: Grounded Reasoning Agent Calibration and Evaluation Li, S., Zhao, T., et al., 2024 arXiv:2406.01856
+
+- BIG-Bench Hard / HELM Agent Evaluation Framework Srivastava, A., Leike, J., et al., 2023 arXiv:2306.11644
+
+### Citation
+```bibtex
+@software{agent_trajectory_evaluation,
+  title  = {agent_trajectory_evaluation: Unified LLM Agent Evaluation Toolkit},
+  author = {Your Name},
+  year   = {2025},
+  url    = {https://github.com/abhiai-git/agent_trajectory_evaluation},
+  note   = {Evaluates reasoning trajectories via TRACE and GroundTruth frameworks}
 }
 ```
