@@ -3,7 +3,9 @@ from agent_trajectory_evaluation.unified import UnifiedEvaluator
 
 # TRACE (LLM-as-Judge) Evaluation Example — No Ground Truth
 
-config = LLMConfig(provider="openai", model="gpt-4o-mini")
+config = LLMConfig(provider="openai", 
+                   model="gpt-4o-mini",
+                   api_key="sk-5678efgh5678efgh5678efgh5678efgh5678efgh")
 evaluator = UnifiedEvaluator(config)
 
 trajectory = [
