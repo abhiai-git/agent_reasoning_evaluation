@@ -27,6 +27,8 @@ dependencies = [
   "langchain>=0.1.0", # For LangChain integration example
   "langchain-community>=0.0.30", # For LangChain tools
   "langchain-openai>=0.0.8", # For OpenAI LLM in LangChain
+  "crewai>=0.30.0", # For CrewAI integration example
+  "crewai-tools>=0.1.0", # For CrewAI tools
 ]
 
 [project.optional-dependencies]

@@ -250,48 +250,6 @@ Evaluation Results (using this package):
 
 This example demonstrates how to simulate a Google ADK agent's trace and convert it into a format compatible with this evaluation package, then evaluate it using TRACE metrics. The full example code is located in `agent_trajectory_evaluation/example/example_adk.py`.
 
-```python
-import os
-import json
-from agent_trajectory_evaluation import LLMConfig
-from agent_trajectory_evaluation.unified import UnifiedEvaluator
-
-# ... (ADK simulation and parsing functions as in example_adk.py) ...
-
-# Example usage:
-if __name__ == "__main__":
-    # Ensure GOOGLE_API_KEY is set in environment
-    if not os.getenv("GOOGLE_API_KEY"):
-        print("GOOGLE_API_KEY environment variable not set. Skipping ADK evaluation with LLM.")
-    else:
-        try:
-            # This part would typically involve running your ADK agent
-            # and capturing its trace, similar to the content of example_adk.py
-            # For brevity, we'll show the evaluation part directly.
-
-            # Example parsed trajectory (from a hypothetical ADK run)
-            parsed_trajectory = [
-                {"thought": "I need to multiply 12 by 3 first.", "action": "adk_multiply", "action_input": {"a": 12, "b": 3}, "observation": 36},
-                {"thought": "Now I need to add 5 to the result 36.", "action": "adk_add", "action_input": {"a": 36, "b": 5}, "observation": 41},
-                {"final_answer": "41"}
-            ]
-            print("\nParsed Trajectory (from simulated ADK trace):")
-            print(json.dumps(parsed_trajectory, indent=2))
-
-            evaluator_config = LLMConfig(provider="gemini", model="gemini-pro", api_key=os.getenv("GOOGLE_API_KEY"))
-            evaluator = UnifiedEvaluator(evaluator_config)
-            
-            valid_tools_for_adk = ["adk_multiply", "adk_add"]
-
-            evaluation_results = evaluator.evaluate(parsed_trajectory, valid_tools=valid_tools_for_adk)
-            print("\nEvaluation Results (using this package):")
-            for k, v in evaluation_results.items():
-                print(f"  {k}: {v:.3f}")
-
-        except Exception as e:
-            print(f"An error occurred during ADK example evaluation: {e}")
-            print("Please ensure your GOOGLE_API_KEY is set and you have access to the Gemini model.")
-```
 #### Output (Example from running `example_adk.py`)
 ```
 # ... (output from ADK agent execution) ...
@@ -318,6 +276,86 @@ Parsed Trajectory (from simulated ADK trace):
   },
   {
     "final_answer": "41"
+  }
+]
+
+Evaluation Results (using this package):
+  Efficiency: 0.600
+  Hallucination: 0.000
+  Adaptivity: 1.000
+  InstructionError: 0.000
+```
+
+### Example 6 — CrewAI Integration
+
+This example demonstrates how to simulate a CrewAI agent's trace and convert it into a format compatible with this evaluation package, then evaluate it using TRACE metrics. The full example code is located in `agent_trajectory_evaluation/example/example_crewai.py`.
+
+```python
+import os
+import json
+from agent_trajectory_evaluation import LLMConfig
+from agent_trajectory_evaluation.unified import UnifiedEvaluator
+
+# ... (CrewAI simulation and parsing functions as in example_crewai.py) ...
+
+# Example usage:
+if __name__ == "__main__":
+    # Ensure OPENAI_API_KEY is set in environment
+    if not os.getenv("OPENAI_API_KEY"):
+        print("OPENAI_API_KEY environment variable not set. Skipping CrewAI evaluation with LLM.")
+    else:
+        try:
+            # This part would typically involve running your CrewAI agent
+            # and capturing its trace, similar to the content of example_crewai.py
+            # For brevity, we'll show the evaluation part directly.
+
+            # Example parsed trajectory (from a hypothetical CrewAI run)
+            parsed_trajectory = [
+                {"thought": "I need to find the current year first using the SearchTool.", "action": "SearchTool", "action_input": {"query": "current year"}, "observation": "The current year is 2025."},
+                {"thought": "The current year is 2025. I need to add 10 to it using the Calculator.", "action": "Calculator", "action_input": {"operation": "2025 + 10"}, "observation": "2035"},
+                {"final_answer": "2035"}
+            ]
+            print("\nParsed Trajectory (from simulated CrewAI trace):")
+            print(json.dumps(parsed_trajectory, indent=2))
+
+            evaluator_config = LLMConfig(provider="openai", model="gpt-4o-mini", api_key=os.getenv("OPENAI_API_KEY"))
+            evaluator = UnifiedEvaluator(evaluator_config)
+            
+            valid_tools_for_crewai = ["Calculator", "SearchTool"]
+
+            evaluation_results = evaluator.evaluate(parsed_trajectory, valid_tools=valid_tools_for_crewai)
+            print("\nEvaluation Results (using this package):")
+            for k, v in evaluation_results.items():
+                print(f"  {k}: {v:.3f}")
+
+        except Exception as e:
+            print(f"An error occurred during CrewAI example evaluation: {e}")
+            print("Please ensure your OPENAI_API_KEY is set and CrewAI dependencies are correctly installed.")
+```
+#### Output (Example from running `example_crewai.py`)
+```
+# ... (output from CrewAI agent execution) ...
+
+Parsed Trajectory (from simulated CrewAI trace):
+[
+  {
+    "thought": "I need to find the current year first using the SearchTool.",
+    "action": "SearchTool",
+    "action_input": {
+      "query": "current year"
+    },
+    "observation": "The current year is 2025."
+  },
+  {
+    "thought": "The current year is 2025. I need to add 10 to it using the Calculator.",
+    "action": "Calculator",
+    "action_input": {
+      "operation": "2025 + 10"
+    },
+    "observation": "2035"
+  },
+  {
+    "final_answer": "2035"
   }
 ]
 
