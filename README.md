@@ -214,7 +214,7 @@ This framework synthesizes ideas from three major research efforts:
 ```bibtex
 @software{agent_trajectory_evaluation,
   title  = {agent_trajectory_evaluation: Unified LLM Agent Evaluation Toolkit},
-  author = {Your Name},
+  author = {Abhishek Bhardwaj},
   year   = {2025},
   url    = {https://github.com/abhiai-git/agent_trajectory_evaluation},
   note   = {Evaluates reasoning trajectories via TRACE and GroundTruth frameworks}
