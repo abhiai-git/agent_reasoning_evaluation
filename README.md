@@ -11,7 +11,7 @@
 It supports two major evaluation paradigms:
 
 1. **LLM-as-Judge (TRACE)** — evaluates reasoning quality **without ground truth**, using intrinsic metrics such as Efficiency, Hallucination, and Adaptivity.  
-2. **GroundTruth-Based Evaluation (GRACE-style)** — compares agent trajectories or telemetry logs against reference data, using a **weighted overlap score** that incorporates Exact and Fuzzy matching for individual components of each step and the final answer.
+2. **GroundTruth-Based Evaluation (GRACE-style)** — compares agent trajectories or telemetry logs against reference data, using a **weighted overlap score** that incorporates Exact and Fuzzy matching for individual components of each step and the final answer. This evaluation can be performed in either **ordered** or **unordered** mode, allowing flexibility in how step sequences are compared.
 
 The toolkit unifies both under a single, composable API that is **multi-provider compatible** (OpenAI, Gemini, Claude, Bedrock).
 
@@ -137,24 +137,48 @@ custom_weights = {
     'thought': 0.0 # Thoughts are not directly compared for overlap score
 }
 
-# Evaluate with default weights
-print("--- Evaluation with Default Weights ---")
-scores_default = evaluator.evaluate(pred, gold)
-print("GroundTruth KPIs (Default Weights):", scores_default)
+# Evaluate with default weights (ordered matching)
+print("--- Evaluation with Default Weights (Ordered Matching) ---")
+scores_default_ordered = evaluator.evaluate(pred, gold)
+print("GroundTruth KPIs (Default Weights, Ordered):", scores_default_ordered)
 
-# Evaluate with custom weights
-print("\n--- Evaluation with Custom Weights ---")
-scores_custom = evaluator.evaluate(pred, gold, weights=custom_weights)
-print("GroundTruth KPIs (Custom Weights):", scores_custom)
+# Evaluate with custom weights (ordered matching)
+print("\n--- Evaluation with Custom Weights (Ordered Matching) ---")
+scores_custom_ordered = evaluator.evaluate(pred, gold, weights=custom_weights)
+print("GroundTruth KPIs (Custom Weights, Ordered):", scores_custom_ordered)
+
+# Example for unordered trajectory matching
+# Let's create a slightly reordered prediction for demonstration
+pred_unordered = {
+    "steps": [
+        {"action": "CalendarAPI.add_event", "action_input": "Picnic at Golden Gate Park", "observation": "Event added"},
+        {"action": "WeatherAPI.query", "action_input": "San Francisco", "observation": "Sunny"}
+    ],
+    "final_answer": "Picnic scheduled for sunny day in San Francisco"
+}
+
+print("\n--- Evaluation with Unordered Trajectory Matching (Default Weights) ---")
+scores_unordered = evaluator.evaluate(pred_unordered, gold, trajectory_match_mode="unordered")
+print("GroundTruth KPIs (Unordered Mode):", scores_unordered)
+
+print("\n--- Evaluation with Ordered Trajectory Matching (Default Weights, for comparison) ---")
+scores_ordered_reordered_pred = evaluator.evaluate(pred_unordered, gold, trajectory_match_mode="ordered")
+print("GroundTruth KPIs (Ordered Mode with reordered pred):", scores_ordered_reordered_pred)
 ```
-#### Output (Example with default weights)
+#### Output (Example with default weights and ordered matching)
 ```
 {
   'OverallWeightedOverlapScore': 0.785
 }
 ```
+#### Output (Example with default weights and unordered matching)
+```
+{
+  'OverallWeightedOverlapScore': 0.850
+}
+```
 
-The `GroundTruthEvaluator` now uses a `multi_step_overlap` function that calculates a single weighted score. This score considers the similarity of `action`, `action_input`, `observation` for each step, and the `final_answer`. Weights for these components are configurable, allowing users to prioritize certain aspects of the trajectory. By default, `action` and `final_answer` are given higher weights.
+The `GroundTruthEvaluator` now uses a `multi_step_overlap` function that calculates a single weighted score. This score considers the similarity of `action`, `action_input`, `observation` for each step, and the `final_answer`. Weights for these components are configurable, allowing users to prioritize certain aspects of the trajectory. By default, `action` and `final_answer` are given higher weights. The `trajectory_match_mode` parameter allows choosing between 'ordered' (default) and 'unordered' matching for trajectory steps.
 
 ### Example 3 — Unified Evaluation (TRACE + GroundTruth)
 
