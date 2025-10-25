@@ -1,6 +1,6 @@
 import numpy as np
 import difflib
-from typing import Dict, List, Any, Optional
+from typing import Dict, List, Any, Optional, Tuple
 from sentence_transformers import SentenceTransformer, util
 from fuzzywuzzy import fuzz
 import json

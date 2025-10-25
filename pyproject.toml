@@ -24,6 +24,9 @@ dependencies = [
   "sentence-transformers>=2.5.0",
   "fuzzywuzzy>=0.18.0",
   "python-Levenshtein>=0.25.0", # Levenshtein is a dependency for fuzzywuzzy for better performance
+  "langchain>=0.1.0", # For LangChain integration example
+  "langchain-community>=0.0.30", # For LangChain tools
+  "langchain-openai>=0.0.8", # For OpenAI LLM in LangChain
 ]
 
 [project.optional-dependencies]
