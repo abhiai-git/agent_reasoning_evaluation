@@ -1,4 +1,4 @@
-# 🧠 Agent Trajectory Evaluation
+# Agent Trajectory Evaluation
 
 **A Unified Framework for Evaluating LLM Agent Reasoning, Trajectories, and Telemetry**
 
