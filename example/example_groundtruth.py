@@ -1,19 +1,32 @@
-from agent_trajectory_evaluation import LLMConfig
-from agent_trajectory_evaluation.unified import UnifiedEvaluator
+from agent_trajectory_evaluation.groundtruth import GroundTruthEvaluator
 
-# TRACE (LLM-as-Judge) Evaluation Example — No Ground Truth
+pred = {
+    "steps": [
+        {"action": "WeatherAPI.query", "action_input": "San Francisco", "observation": "Sunny"},
+        {"action": "CalendarAPI.add_event", "action_input": "Picnic at Golden Gate Park", "observation": "Event added"}
+    ],
+    "final_answer": "Picnic scheduled for sunny day in San Francisco"
+}
 
-config = LLMConfig(provider="openai", model="gpt-4o-mini")
-evaluator = UnifiedEvaluator(config)
+gold = {
+    "steps": [
+        {"action": "WeatherAPI.query", "action_input": "SF", "observation": "Sunny"},
+        {"action": "CalendarAPI.add_event", "action_input": "Picnic @ Golden Gate Park", "observation": "Event added successfully"}
+    ],
+    "final_answer": "Event scheduled for a sunny day in SF"
+}
 
-trajectory = [
-    {"thought": "Search for hotels in Paris", "action": "HotelAPI.search", "action_input": "Paris", "observation": "5 hotels found"},
-    {"thought": "Select the cheapest hotel", "action": "HotelAPI.select", "action_input": "hotel_id=3", "observation": "Booking confirmed"}
-]
+evaluator = GroundTruthEvaluator()
 
-# Only TRACE metrics (Efficiency, Hallucination, Adaptivity, InstructionError)
-results = evaluator.evaluate(trajectory, valid_tools=["HotelAPI.search", "HotelAPI.select"])
+# Define custom weights with higher values for action, final_answer, action_input, and observation
+custom_weights = {'action': 1.0,'action_input': 0.0,'observation': 0.0,'final_answer': 0.0,'thought': 0.0}
 
-print("TRACE Evaluation Results (No Ground Truth):")
-for k, v in results.items():
-    print(f"  {k}: {v:.3f}")
+# Evaluate with default weights
+print("--- Evaluation with Default Weights ---")
+scores_default = evaluator.evaluate(pred, gold)
+print("GroundTruth KPIs (Default Weights):", scores_default)
+
+# Evaluate with custom weights
+print("\n--- Evaluation with Custom Weights ---")
+scores_custom = evaluator.evaluate(pred, gold, weights=custom_weights)
+print("GroundTruth KPIs (Custom Weights):", scores_custom)

@@ -11,7 +11,7 @@
 It supports two major evaluation paradigms:
 
 1. **LLM-as-Judge (TRACE)** — evaluates reasoning quality **without ground truth**, using intrinsic metrics such as Efficiency, Hallucination, and Adaptivity.  
-2. **GroundTruth-Based Evaluation (GRACE-style)** — compares agent trajectories or telemetry logs against reference data, using Exact, Fuzzy, and Multi-Step Overlap metrics.
+2. **GroundTruth-Based Evaluation (GRACE-style)** — compares agent trajectories or telemetry logs against reference data, using a **weighted overlap score** that incorporates Exact and Fuzzy matching for individual components of each step and the final answer.
 
 The toolkit unifies both under a single, composable API that is **multi-provider compatible** (OpenAI, Gemini, Claude, Bedrock).
 
@@ -22,7 +22,7 @@ The toolkit unifies both under a single, composable API that is **multi-provider
 | Category | Features |
 |-----------|-----------|
 | **Evaluation Modes** | • TRACE (No GroundTruth)  • GroundTruth Comparison  • Unified Evaluation |
-| **Metrics** | Efficiency, Hallucination, Adaptivity, InstructionError, ExactMatch, FuzzyMatch, StepOverlap |
+| **Metrics** | Efficiency, Hallucination, Adaptivity, InstructionError, WeightedOverlapScore |
 | ☁️ **Multi-Provider Support** | OpenAI (GPT-4/4o), Google Gemini, Anthropic Claude, AWS Bedrock |
 | **Parallel Evaluation** | Async batch scoring for large-scale datasets |
 | **Embedding-based Similarity** | Uses SentenceTransformers for semantic fuzzy scoring |
@@ -107,22 +107,34 @@ gold = {
 }
 
 evaluator = GroundTruthEvaluator()
-scores = evaluator.evaluate(pred, gold)
-print("GroundTruth KPIs:", scores)
+
+# Custom weights can be provided (optional)
+custom_weights = {
+    'action': 0.30,
+    'action_input': 0.25,
+    'observation': 0.20,
+    'final_answer': 0.25,
+    'thought': 0.0 # Thoughts are not directly compared for overlap score
+}
+
+# Evaluate with default weights
+print("--- Evaluation with Default Weights ---")
+scores_default = evaluator.evaluate(pred, gold)
+print("GroundTruth KPIs (Default Weights):", scores_default)
+
+# Evaluate with custom weights
+print("\n--- Evaluation with Custom Weights ---")
+scores_custom = evaluator.evaluate(pred, gold, weights=custom_weights)
+print("GroundTruth KPIs (Custom Weights):", scores_custom)
 ```
-#### Output
+#### Output (Example with default weights)
 ```
 {
-  'ExactFinalMatch': 0.0,
-  'FuzzyFinalMatch': 0.93,
-  'TrajectoryMetrics': {
-      'ExactStepMatch': 0.5,
-      'FuzzyStepOverlap': 1.0,
-      'Composite': 0.75
-  },
-  'OverallScore': 0.84
+  'OverallWeightedOverlapScore': 0.785
 }
 ```
+
+The `GroundTruthEvaluator` now uses a `multi_step_overlap` function that calculates a single weighted score. This score considers the similarity of `action`, `action_input`, `observation` for each step, and the `final_answer`. Weights for these components are configurable, allowing users to prioritize certain aspects of the trajectory. By default, `action` and `final_answer` are given higher weights.
 
 ### Example 3 — Unified Evaluation (TRACE + GroundTruth)
 

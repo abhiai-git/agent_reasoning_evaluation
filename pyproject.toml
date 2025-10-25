@@ -1,23 +1,54 @@
+[build-system]
+requires = ["setuptools>=75", "wheel"]
+build-backend = "setuptools.build_meta"
+
 [project]
 name = "agent_trajectory_evaluation"
 version = "0.1.0"
-description = "Unified evaluation toolkit for LLM agent reasoning, trajectory quality, and ground-truth KPI assessment"
-authors = [{ name="Abhishek Bhardwaj", email="abhishekbhardwaj13506@gmail.com" }]
-license = "Apache-2.0"
+description = "Unified evaluation toolkit for LLM agent reasoning, trajectory quality, and ground-truth KPI assessment."
+authors = [
+  { name = "Abhishek Bhardwaj", email = "abhishekbhardwaj13506@gmail.com" }
+]
+license = { text = "Apache-2.0" }
 readme = "README.md"
 requires-python = ">=3.9"
 
 dependencies = [
-  "boto3",
-  "numpy",
-  "tqdm",
-  "aiohttp",
-  "google-generativeai",
-  "anthropic",
-  "openai",
-  "sentence-transformers"
+  "boto3>=1.28.0",
+  "numpy>=1.24.0,<2.0.0",
+  "tqdm>=4.66.0",
+  "aiohttp>=3.9.0",
+  "google-generativeai>=0.5.0",
+  "anthropic>=0.25.0",
+  "openai>=1.0.0",
+  "sentence-transformers>=2.5.0",
+  "fuzzywuzzy>=0.18.0",
+  "python-Levenshtein>=0.25.0", # Levenshtein is a dependency for fuzzywuzzy for better performance
+]
+
+[project.optional-dependencies]
+dev = [
+  "pytest>=8.0.0",
+  "black>=24.0.0",
+  "ruff>=0.5.0",
+  "build>=1.2.1",
+  "twine>=5.0.0"
 ]
 
 [project.urls]
 Homepage = "https://github.com/abhiai-git/agent_trajectory_evaluation"
-Documentation = "https://github.com/abhiai-git/agent_trajectory_evaluation"
+Documentation = "https://github.com/abhiai-git/agent_trajectory_evaluation#readme"
+Issues = "https://github.com/abhiai-git/agent_trajectory_evaluation/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["agent_trajectory_evaluation*"]
+
+[tool.black]
+line-length = 100
+target-version = ["py310", "py311", "py312"]
+
+[tool.ruff]
+line-length = 100
+select = ["E", "F", "I"]
+ignore = ["E501"]
