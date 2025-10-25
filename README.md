@@ -23,7 +23,7 @@ The toolkit unifies both under a single, composable API that is **multi-provider
 |-----------|-----------|
 | **Evaluation Modes** | • TRACE (No GroundTruth)  • GroundTruth Comparison  • Unified Evaluation |
 | **Metrics** | Efficiency, Hallucination, Adaptivity, InstructionError, WeightedOverlapScore |
-| ☁️ **Multi-Provider Support** | OpenAI (GPT-4/4o), Google Gemini, Anthropic Claude, AWS Bedrock |
+|  **Multi-Provider Support** | OpenAI (GPT-4/4o), Google Gemini, Anthropic Claude, AWS Bedrock |
 | **Parallel Evaluation** | Async batch scoring for large-scale datasets |
 | **Embedding-based Similarity** | Uses SentenceTransformers for semantic fuzzy scoring |
 | **KPI Aggregation** | Returns structured metrics for dashboards and research |
@@ -187,10 +187,13 @@ print(metrics)
 The TRACE framework evaluates agent trajectories across four key dimensions:
 
 1.  **Efficiency ($\text{Eff}(\mathcal{T})$)**: Quantifies the proportion of necessary evidence in a successful trajectory.
+    
     $$\text{Eff}(\mathcal{T}) = \frac{ \|\mathcal{E}_{min}\| }{ \|\mathcal{E}_{n}\| } = 1 - \frac{ \|\mathcal{E}_{unnecessary}\| }{ \|\mathcal{E}_{n}\| }$$
+    
     Where $\mathcal{E}_{min}$ is the minimal set of evidence required to deduce the final answer, and $\|\mathcal{E}_{n}\|$ is the total evidence collected.
 
 2.  **Hallucination ($\text{H}(\mathcal{T})$)**: Measures the average rate of thoughts that are not grounded in the accumulated evidence.
+    
     $$\text{H}(\mathcal{T}) = \frac{ \sum_{t=1}^{n} H(s_t) }{ n }$$
     Where $H(s_t) = 1$ if the thought $th_t$ at step $s_t$ is not logically derivable from the evidence bank $\mathcal{E}_{t-1}$, and $0$ otherwise.
 
@@ -202,12 +205,12 @@ The TRACE framework evaluates agent trajectories across four key dimensions:
     $$Inst. = \frac{ \text{Count of invalid actions or input formats} }{ \text{Total number of steps in trajectory} }$$
 
 ### Theoretical Foundation
-This framework synthesizes ideas from three major research efforts:
+This framework synthesizes ideas from several major research efforts:
 
-- TRACE: Evaluating Tool-Enabled Agent Reasoning Zhou, J., Chen, H.,Pan, L., et al., 2024 arXiv:2404.06626
-
+- TRACE: Evaluating Tool-Enabled Agent Reasoning Kim, W., Park, S., In, Y., et al., 2025 arXiv:2510.02837
+- ACPBench: Reasoning about Action, Change, and Planning Kokel, H., Katz, M., Srinivas, K., et al., 2024 arXiv:2410.05669
+- NATURALPLAN: Benchmarking LLMs on Natural Language Planning Zheng, H. S., Mishra, S., Zhang, H., et al., 2024 arXiv:2406.04520
 - GRACE: Grounded Reasoning Agent Calibration and Evaluation Li, S., Zhao, T., et al., 2024 arXiv:2406.01856
-
 - BIG-Bench Hard / HELM Agent Evaluation Framework Srivastava, A., Leike, J., et al., 2023 arXiv:2306.11644
 
 ### Citation
@@ -219,4 +222,29 @@ This framework synthesizes ideas from three major research efforts:
   url    = {https://github.com/abhiai-git/agent_trajectory_evaluation},
   note   = {Evaluates reasoning trajectories via TRACE and GroundTruth frameworks}
 }
+
+@article{Kim2025BeyondTF,
+  title={BEYOND THE FINAL ANSWER: EVALUATING THE REASONING TRAJECTORIES OF TOOL-AUGMENTED AGENTS},
+  author={Wonjoong Kim and Sangwu Park and Yeonjun In and Sein Kim and Dongha Lee and Chanyoung Park},
+  journal={arXiv preprint arXiv:2510.02837},
+  year={2025}
+}
+
+@article{Kokel2024ACPBenchRA,
+  title={ACPBench: Reasoning about Action, Change, and Planning},
+  author={Harsha Kokel and Michael Katz and Kavitha Srinivas and Shirin Sohrabi},
+  journal={arXiv preprint arXiv:2410.05669},
+  year={2024}
+}
+
+@article{Zheng2024NATURALPLANBL,
+  title={NATURALPLAN: Benchmarking LLMs on Natural Language Planning},
+  author={Huaixiu Steven Zheng and Swaroop Mishra and Hugh Zhang and Xinyun Chen and Minmin Chen and Azade Nova and Le Hou and Heng-Tze Cheng and Quoc V. Le and Ed H. Chi and Denny Zhou},
+  journal={arXiv preprint arXiv:2406.04520},
+  year={2024}
+}
 ```
+**Full Citations:**
+- Kim, W., Park, S., In, Y., Kim, S., Lee, D., & Park, C. (2025). BEYOND THE FINAL ANSWER: EVALUATING THE REASONING TRAJECTORIES OF TOOL-AUGMENTED AGENTS. *arXiv preprint arXiv:2510.02837*.
+- Kokel, H., Katz, M., Srinivas, K., & Sohrabi, S. (2024). ACPBench: Reasoning about Action, Change, and Planning. *arXiv preprint arXiv:2410.05669*.
+- Zheng, H. S., Mishra, S., Zhang, H., Chen, X., Chen, M., Nova, A., Hou, L., Cheng, H. T., Le, Q. V., Chi, E. H., & Zhou, D. (2024). NATURALPLAN: Benchmarking LLMs on Natural Language Planning. *arXiv preprint arXiv:2406.04520*.
